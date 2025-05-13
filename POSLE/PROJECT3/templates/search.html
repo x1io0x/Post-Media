@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Поиск пользователей</h2>
+<form action="/search_users" method="GET">
+    <input type="text" name="query" placeholder="Введите юзернейм" class="search-input" required>
+    <button type="submit" class="search-btn">
+        <i>Поиск</i>
+    </button>
+</form>
+{% endblock %}

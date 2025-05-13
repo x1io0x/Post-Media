@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Изменить профиль</h1>
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.name.label }}<br>
+            {{ form.name(class="form-control") }}
+            {% for error in form.name.errors %}
+                <p class="alert alert-danger" role="alert">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.surname.label }}<br>
+            {{ form.surname(class="form-control") }}
+            {% for error in form.surname.errors %}
+                <p class="alert alert-danger" role="alert">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.username.label }}<br>
+            {{ form.username(class="form-control") }}
+            {% for error in form.username.errors %}
+                <p class="alert alert-danger" role="alert">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.age.label }}<br>
+            {{ form.age(class="form-control") }}
+            {% for error in form.age.errors %}
+                <p class="alert alert-danger" role="alert">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{ message }}
+    </form>
+{% endblock %}

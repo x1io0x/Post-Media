@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="page-title">Лента новостей</h1>
+
+{% if current_user.is_authenticated %}
+<div class="post-container otst">
+    <div class="text-center my-3">
+        <h3>Что нового? Поделитесь новостями!</h3>
+        <a href="post" class="btn btn-secondary">Добавить пост</a>
+    </div>
+</div>
+{% endif %}
+
+{% for item in post %}
+<div class="lenta-container rr">
+    <div class="post-header">
+        <h2 class="post-user">
+            <a href="/user/{{ item.user.username }}" class="user-link">@{{ item.user.username }}</a>
+        </h2>
+        <span class="post-data">{{ item.created_date.strftime('%d.%m.%Y %H:%M') }}</span>
+    </div>
+
+    <div class="post-body">
+        <h3 class="post-title">{{ item.title }}</h3>
+        <div class="post-content">
+            {{ item.content|safe }}
+        </div>
+
+        {% if item.image %}
+        <div class="post-image-container">
+            <img src="{{ url_for('static', filename='uploads/' + item.image) }}"
+                 class="post-image"
+                 style="max-width: 100%; height: auto; border-radius: 4px;">
+        </div>
+        {% endif %}
+    </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="post-actions">
+        <form action="/add_favorites/{{ item.id }}" method="POST" class="favorite-form">
+            <input type="hidden" name="post_id" value="{{ item.id }}">
+            <button type="submit" class="btn btn-favorites">
+                &#9733; Добавить в избранное
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user == item.user %}
+    <div class="post-actions">
+        <a href="/post/{{ item.id }}" class="btn btn-change">Изменить</a>
+        <a href="/post_delete/{{ item.id }}" class="btn btn-delete">Удалить</a>
+    </div>
+    {% endif %}
+
+    <div class="post-actions">
+        {% if current_user.is_authenticated%}
+        <form action="/like_post/{{ item.id }}" method="POST">
+            <button type="submit" class="like-btn">
+                {% if current_user.id in item.likes|map(attribute='user_id')|list %}
+                    &#10084; {{ item.like_count }}
+                {% else %}
+                    &#129293; {{ item.like_count }}
+                {% endif %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="comments-section">
+        <h4>Комментарии ({{ item.comments|length }})</h4>
+
+        {% if current_user.is_authenticated %}
+        <form action="/add_comment/{{ item.id }}" method="POST" class="comment-form">
+            {{ comment_form.hidden_tag() }}
+            {{ comment_form.text(class="form-control", placeholder="Напишите комментарий") }}
+            {{ comment_form.submit(class="btn btn-sm btn-primary mt-2") }}
+        </form>
+        {% endif %}
+
+        <div class="comments-list">
+            {% for comment in item.comments %}
+            <div class="comment">
+                <div class="comment-header">
+                    <strong>@{{ comment.user.username }}</strong>
+                    <small>{{ comment.created_date.strftime('%d.%m.%Y %H:%M') }}</small>
+                    {% if current_user.is_authenticated and (current_user == comment.user) %}
+                        <form action="/delete_comment/{{ comment.id }}" method="POST"
+                              class="delete-comment-form">
+                            <button type="submit" class="btn btn-sm btn-danger">×</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <div class="comment-text">{{ comment.text }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endfor %}
+{% endblock %}

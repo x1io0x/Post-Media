@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-results-container">
+    <h1>Поиск: {{ query }}</h1>
+    {% if results %}
+    <div class="users-list">
+        {% for user in results %}
+        <div class="user-card">
+            <div class="user-info">
+                <h3>
+                    <a href="{{ url_for('user', username=user.username) }}" class="user-link">
+                        @{{ user.username }}
+                    </a>
+                </h3>
+                <p>{{ user.name }} {{ user.surname }}</p>
+            </div>
+            <a href="{{ url_for('user', username=user.username) }}" class="btn btn-view-profile">
+                Профиль
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results">
+        <p>Пользователи не найдены</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

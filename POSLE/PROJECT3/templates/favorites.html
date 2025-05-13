@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Избранное</h1>
+
+{% if posts %}
+    {% for item in posts %}
+    <div class="lenta-container rr">
+        <div class="post-header">
+            <h2 class="post-user">
+                <a href="/user/{{ item.user.username }}" class="user-link">@{{ item.user.username }}</a>
+            </h2>
+            <span class="post-data">{{ item.created_date.strftime('%d.%m.%Y %H:%M') }}</span>
+        </div>
+        <h3 class="post-title">{{ item.title }}</h3>
+        <div class="post-content">{{ item.content }}</div>
+        {% if item.image %}
+        <div class="post-image-container">
+            <img src="{{ url_for('static', filename='uploads/' + item.image) }}"
+                 class="post-image"
+                 style="max-width: 100%; height: auto; border-radius: 4px;">>
+        </div>
+        {% endif %}
+        <form action="/favorites_delete/{{ item.id }}" method="POST" class="favorite-form">
+            <input type="hidden" name="post_id" value="{{ item.id }}">
+            <button type="submit" class="btn btn-favorites">
+                &#9733; Удалить из избранного
+            </button>
+        </form>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>У вас нет избранных постов</p>
+{% endif %}
+{% endblock %}
